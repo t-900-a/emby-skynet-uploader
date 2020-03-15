@@ -1,13 +1,12 @@
 from configurator.mediaserver import mediaServer_config
 from mediaServer.server import MediaServer
 from mediaServer.item import Item
-from siaskynet import Skynet
 import logging
-import os
 import argparse
 from datetime import *
-from feedgen.feed import FeedGenerator
 import hashlib
+from file_operations import download_then_upload
+from rss_operations import write_rss
 
 _log = logging.getLogger(__name__)
 
@@ -48,53 +47,15 @@ parser.add_argument('--rss_description', dest='rss_description', default='Inform
 parser.add_argument('--rss_contributor', dest='rss_contributor', default='anon',
                     type=str, help="Specify a contributor")
 
+parser.add_argument('--rss_subtitle', dest='rss_subtitle', default='',
+                    type=str, help="Addition comment for your site if you want it"
+                                   "i.e. For more content, please donate _cryptocurrency_symbol to _cryptocurrency_address")
+
 args = parser.parse_args()
-
-def download_then_upload(mediaserver, item_to_upload) -> Item:
-    print(f"Downloading item: # {item_to_upload.id} - {item_to_upload.name}")
-    try:
-        file_to_upload = mediaserver.download_item(item_to_upload)
-    except Exception as inst:
-        _log.critical(inst)
-
-    print(f"Uploading file to skynet: {file_to_upload}")
-    try:
-        skylink = Skynet.UploadFile(file_to_upload)
-        print(f"Media is now available on skynet: {skylink}")
-    except Exception as inst:
-        _log.critical(inst)
-
-    try:
-        clean_up(file_to_upload)
-    except Exception as inst:
-        _log.critical(inst)
-
-    try:
-        setattr(item_to_upload, "skylink", skylink)
-        return item_to_upload
-    except Exception as inst:
-        _log.critical(inst)
-
-def write_rss(medias_with_sialinks, id, title, link, description, contributor):
-    fg = FeedGenerator()
-    fg.load_extension('media', atom=True, rss=True)
-    fg.id(id)
-    fg.title(title)
-    fg.link(link)
-    fg.description(description)
-    fg.contributor(name=contributor)
-    for media in medias_with_sialinks:
-        fe = fg.add_entry()
-        fe.id(media.id)
-        fe.title(media.name)
-        fe.summary(media.overview)
-        fe.link(href=media.skylink, type='application/skylink')
-        fe.media.tbd
-
-def clean_up(file):
-    os.remove(file)
-    exit(0)
-
+# TODO add argument for the script to choose between local or remote file operations
+# you'll need to add a function for direct upload within file_operations.py
+# i.e. if your the server admin, you want to use the full path as there is no need to download from your server
+# i.e. if your a user, you want to download the file from the remote server, then upload to skynet
 def main():
     medias_with_sialinks = []
     config = mediaServer_config(cfg_file=args.media_server_config)
@@ -104,19 +65,20 @@ def main():
     except Exception as inst:
         _log.critical(inst)
 
-    if args.import_all == True:
+    if args.import_all == True or args.item_id_to_upload is not None:
         medias = mediaserver.get_items(include_item_types=args.media_type_to_upload, recursive="true", fields="Path")
         for item_to_upload in medias:
-            item_with_sialink = download_then_upload(mediaserver, item_to_upload)
-            medias_with_sialinks.append(item_with_sialink)
+            if args.import_all == True:
+                item_with_sialink = download_then_upload(mediaserver, item_to_upload)
+                medias_with_sialinks.append(item_with_sialink)
+            if args.item_id_to_upload is not None:
+                if item_to_upload.id == args.item_id_to_upload:
+                    item_with_sialink = download_then_upload(mediaserver, item_to_upload)
+                    medias_with_sialinks.append(item_with_sialink)
 
         if args.rss_output is not None:
-            write_rss(medias_with_sialinks, args.rss_id, args.rss_title, args.rss_link, args.rss_description, args.rss_contributor)
-        exit(0)
-
-    if args.item_id_to_upload is not None:
-        item_to_upload = Item(id=args.item_id_to_upload)
-        download_then_upload(mediaserver, item_to_upload)
+            write_rss(medias_with_sialinks, args.rss_id, args.rss_title, args.rss_link,
+                      args.rss_description, args.rss_contributor, args.rss_subtitle)
         exit(0)
 
     if args.date_created is not None:
@@ -130,7 +92,8 @@ def main():
             else:
                 break
         if args.rss_output is not None:
-            write_rss(medias_with_sialinks, args.rss_id, args.rss_title, args.rss_link, args.rss_description, args.rss_contributor)
+            write_rss(medias_with_sialinks, args.rss_id, args.rss_title, args.rss_link,
+                      args.rss_description, args.rss_contributor, args.rss_subtitle)
         exit(0)
 
 
