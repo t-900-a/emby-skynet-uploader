@@ -65,20 +65,20 @@ def main():
     except Exception as inst:
         _log.critical(inst)
 
-    if args.import_all == True or args.item_id_to_upload is not None:
+    if args.import_all == True:
         medias = mediaserver.get_items(include_item_types=args.media_type_to_upload, recursive="true", fields="Path")
         for item_to_upload in medias:
-            if args.import_all == True:
-                item_with_sialink = download_then_upload(mediaserver, item_to_upload)
-                medias_with_sialinks.append(item_with_sialink)
-            if args.item_id_to_upload is not None:
-                if item_to_upload.id == args.item_id_to_upload:
-                    item_with_sialink = download_then_upload(mediaserver, item_to_upload)
-                    medias_with_sialinks.append(item_with_sialink)
+            item_with_sialink = download_then_upload(mediaserver, item_to_upload)
+            medias_with_sialinks.append(item_with_sialink)
 
         if args.rss_output is not None:
             write_rss(medias_with_sialinks, args.rss_id, args.rss_title, args.rss_link,
                       args.rss_description, args.rss_contributor, args.rss_subtitle)
+        exit(0)
+
+    if args.item_id_to_upload is not None:
+        item_to_upload = mediaserver.get_item(int(args.item_id_to_upload))
+        item_with_sialink = download_then_upload(mediaserver, item_to_upload)
         exit(0)
 
     if args.date_created is not None:
