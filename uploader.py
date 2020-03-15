@@ -6,6 +6,8 @@ import logging
 import os
 import argparse
 from datetime import *
+from feedgen.feed import FeedGenerator
+import hashlib
 
 _log = logging.getLogger(__name__)
 
@@ -29,9 +31,26 @@ parser.add_argument('--mediaserverconfig', dest='media_server_config', default='
                     help="config file for the emby/jellyfin server connection"
                          " file will be generated if none exists")
 
+parser.add_argument('--rss_id', dest='rss_title', default=hashlib.md5(bytes(datetime.datetime.now().__str__(), "ascii")).hexdigest()[:8], type=str,
+                    help="Id for your channel"
+                        " i.e. 4c6ca4f7")
+
+parser.add_argument('--rss_title', dest='rss_title', default=None, type=str,
+                    help="The name of your rss channel, if none is specified an rss feed will not be generated"
+                        " i.e. anon's Media")
+
+parser.add_argument('--rss_link', dest='rss_link', default='sia://fALzGYpbWAhwBu3Qs5z0MUbTbBUQ117rnERnqlRmaR-HiA',
+                    type=str, help="Include a link if you would like your site to be referenced")
+
+parser.add_argument('--rss_description', dest='rss_description', default='Information wants to be free',
+                    type=str, help="Choose the description of the feed")
+
+parser.add_argument('--rss_contributor', dest='rss_contributor', default='anon',
+                    type=str, help="Specify a contributor")
+
 args = parser.parse_args()
 
-def download_then_upload(mediaserver, item_to_upload):
+def download_then_upload(mediaserver, item_to_upload) -> Item:
     print(f"Downloading item: # {item_to_upload.id} - {item_to_upload.name}")
     try:
         file_to_upload = mediaserver.download_item(item_to_upload)
@@ -50,11 +69,34 @@ def download_then_upload(mediaserver, item_to_upload):
     except Exception as inst:
         _log.critical(inst)
 
+    try:
+        setattr(item_to_upload, "skylink", skylink)
+        return item_to_upload
+    except Exception as inst:
+        _log.critical(inst)
+
+def write_rss(medias_with_sialinks, id, title, link, description, contributor):
+    fg = FeedGenerator()
+    fg.load_extension('media', atom=True, rss=True)
+    fg.id(id)
+    fg.title(title)
+    fg.link(link)
+    fg.description(description)
+    fg.contributor(name=contributor)
+    for media in medias_with_sialinks:
+        fe = fg.add_entry()
+        fe.id(media.id)
+        fe.title(media.name)
+        fe.summary(media.overview)
+        fe.link(href=media.skylink, type='application/skylink')
+        fe.media.tbd
+
 def clean_up(file):
     os.remove(file)
     exit(0)
 
 def main():
+    medias_with_sialinks = []
     config = mediaServer_config(cfg_file=args.media_server_config)
 
     try:
@@ -65,7 +107,11 @@ def main():
     if args.import_all == True:
         medias = mediaserver.get_items(include_item_types=args.media_type_to_upload, recursive="true", fields="Path")
         for item_to_upload in medias:
-            download_then_upload(mediaserver, item_to_upload)
+            item_with_sialink = download_then_upload(mediaserver, item_to_upload)
+            medias_with_sialinks.append(item_with_sialink)
+
+        if args.rss_output is not None:
+            write_rss(medias_with_sialinks, args.rss_id, args.rss_title, args.rss_link, args.rss_description, args.rss_contributor)
         exit(0)
 
     if args.item_id_to_upload is not None:
@@ -79,9 +125,12 @@ def main():
 
         for item_to_upload in medias:
             if (datetime.strptime(item_to_upload.date_created[:10], '%Y-%m-%d') >= datetime.strptime(args.date_created, '%Y-%m-%d')):
-                download_then_upload(mediaserver, item_to_upload)
+                item_with_sialink = download_then_upload(mediaserver, item_to_upload, args.rss_output)
+                medias_with_sialinks.append(item_with_sialink)
             else:
                 break
+        if args.rss_output is not None:
+            write_rss(medias_with_sialinks, args.rss_id, args.rss_title, args.rss_link, args.rss_description, args.rss_contributor)
         exit(0)
 
 
