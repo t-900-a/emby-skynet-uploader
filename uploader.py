@@ -39,7 +39,8 @@ parser.add_argument('--rss_title', dest='rss_title', default=None, type=str,
                         " i.e. anon's Media")
 
 parser.add_argument('--rss_link', dest='rss_link', default='sia://fALzGYpbWAhwBu3Qs5z0MUbTbBUQ117rnERnqlRmaR-HiA',
-                    type=str, help="Include a link if you would like your site to be referenced")
+                    type=str, help="Include a link if you would like your site to be referenced"
+                                   "i.e. https://www.mysharedmedia.com/jellyfin/")
 
 parser.add_argument('--rss_description', dest='rss_description', default='Information wants to be free',
                     type=str, help="Choose the description of the feed")

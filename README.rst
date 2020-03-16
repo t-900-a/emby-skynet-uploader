@@ -25,9 +25,10 @@ Want to help?
 
 Merge requests are invited
 
-TODO: output rss feed file for the files that were uploaded
+There are many todo's in the code
 
 TODO: Stream the download to get around the requirement to have download permissions on the emby/jellyfin server
+TODO: Include additional information into the rss feed i.e. genre, actors, imdb rating, etc
 
 Available Scripts
 -----------------
@@ -52,6 +53,24 @@ Parameters
 * * script will prompt you via the command line for your current media server information (IP/PORT/ADMIN user)
 * * file will be generated if none exists
 
+* RSS related parameters
+* * --rss_id
+* * * Id for your channel
+* * * default: random characters
+* * --rss_title
+* * * The name of your rss channel, if none is specified an rss feed will not be generated
+* * * i.e. anon's Media
+* * * Only required parameter to produce a rss atom feed
+* * --rss_link
+* * * Include a link if you would like your site to be referenced
+* * * i.e. https://www.mysharedmedia.com/jellyfin/
+* * --rss_description
+* * * Choose the description of the feed
+* * --rss_contributor
+* * * Choose the description of the feed
+* * --rss_subtitle
+* * * Addition comment for your site if you want it
+* * * i.e. For more content, please donate _cryptocurrency_symbol to _cryptocurrency_address
 
 Usage
 -----------
@@ -100,3 +119,36 @@ Examples
 
     python uploader.py --all --mediatype "Episode"
 
+* Example RSS Feed
+
+.. code-block:: xml
+
+    <?xml version='1.0' encoding='UTF-8'?>
+    <feed xmlns:media="http://search.yahoo.com/mrss/" xmlns="http://www.w3.org/2005/Atom">
+    <id>7371fbee</id>
+    <title>Open source Movie Feed</title>
+    <updated>2020-03-16T02:51:23.343056+00:00</updated>
+    <link href="sia://fALzGYpbWAhwBu3Qs5z0MUbTbBUQ117rnERnqlRmaR-HiA"/>
+    <contributor>
+        <name>t-900</name>
+    </contributor>
+    <generator uri="https://lkiesow.github.io/python-feedgen" version="0.9.0">python-feedgen</generator>
+    <entry>
+        <id>5</id>
+        <title>Big Buck Bunny</title>
+        <updated>2020-03-16T02:51:23.343951+00:00</updated>
+        <link href="sia://AAApJJPnci_CzFnddB076HGu1_C64T6bfoiQqvsiVB5XeQ" rel="alternate"/>
+        <media:group>
+            <media:content url="sia://AAApJJPnci_CzFnddB076HGu1_C64T6bfoiQqvsiVB5XeQ" fileSize="220514438" type="video/x-msvideo" medium="Video" expression="full" bitrate="2500431" framerate="24" samplingrate="48000" channels="6" duration="596.458" height="480" width="854"/>
+        </media:group>
+    </entry>
+    </feed>
+
+
+Integration Ideas
+-----------------
+
+Get multiple emby/jellyfin server admins together and have each admin create an rss feed on their own server.
+Then have a centralized server that index and makes the media searchable.
+This project could be used as an inspiration: https://www.datorss.com/
+https://github.com/davidesantangelo/datorss
