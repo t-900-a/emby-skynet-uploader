@@ -1,11 +1,12 @@
 from configurator.mediaserver import mediaServer_config
 from mediaServer.server import MediaServer
 from mediaServer.item import Item
-from siaskynet import Skynet
 import logging
-import os
 import argparse
 from datetime import *
+import hashlib
+from file_operations import download_then_upload
+from rss_operations import write_rss
 
 _log = logging.getLogger(__name__)
 
@@ -29,34 +30,37 @@ parser.add_argument('--mediaserverconfig', dest='media_server_config', default='
                     help="config file for the emby/jellyfin server connection"
                          " file will be generated if none exists")
 
+parser.add_argument('--rss_id', dest='rss_id', default=hashlib.md5(bytes(datetime.now().__str__(), "ascii")).hexdigest()[:8], type=str,
+                    help="Id for your channel"
+                        " i.e. 4c6ca4f7")
+
+parser.add_argument('--rss_title', dest='rss_title', default=None, type=str,
+                    help="The name of your rss channel, if none is specified an rss feed will not be generated"
+                        " i.e. anon's Media")
+
+parser.add_argument('--rss_link', dest='rss_link', default='sia://fALzGYpbWAhwBu3Qs5z0MUbTbBUQ117rnERnqlRmaR-HiA',
+                    type=str, help="Include a link if you would like your site to be referenced"
+                                   "i.e. https://www.mysharedmedia.com/jellyfin/")
+
+parser.add_argument('--rss_description', dest='rss_description', default='Information wants to be free',
+                    type=str, help="Choose the description of the feed")
+
+parser.add_argument('--rss_contributor', dest='rss_contributor', default='anon',
+                    type=str, help="Specify a contributor")
+
+parser.add_argument('--rss_subtitle', dest='rss_subtitle', default='',
+                    type=str, help="Addition comment for your site if you want it"
+                                   "i.e. For more content, please donate _cryptocurrency_symbol to _cryptocurrency_address")
+
 args = parser.parse_args()
-
-def download_then_upload(mediaserver, item_to_upload):
-    print(f"Downloading item: # {item_to_upload.id} - {item_to_upload.name}")
-    try:
-        file_to_upload = mediaserver.download_item(item_to_upload)
-    except Exception as inst:
-        _log.critical(inst)
-
-    print(f"Uploading file to skynet: {file_to_upload}")
-    try:
-        skylink = Skynet.UploadFile(file_to_upload)
-        print(f"Media is now available on skynet: {skylink}")
-    except Exception as inst:
-        _log.critical(inst)
-
-    try:
-        clean_up(file_to_upload)
-    except Exception as inst:
-        _log.critical(inst)
-
-def clean_up(file):
-    os.remove(file)
-    exit(0)
-
+# TODO add argument for the script to choose between local or remote file operations
+# TODO Add support for tv shows and anime
+# you'll need to add a function for direct upload within file_operations.py
+# i.e. if your the server admin, you want to use the full path as there is no need to download from your server
+# i.e. if your a user, you want to download the file from the remote server, then upload to skynet
 def main():
+    medias_with_sialinks = []
     config = mediaServer_config(cfg_file=args.media_server_config)
-
     try:
         mediaserver = MediaServer(config)
     except Exception as inst:
@@ -65,13 +69,13 @@ def main():
     if args.import_all == True:
         medias = mediaserver.get_items(include_item_types=args.media_type_to_upload, recursive="true", fields="Path")
         for item_to_upload in medias:
-            download_then_upload(mediaserver, item_to_upload)
-        exit(0)
+            item_with_sialink = download_then_upload(mediaserver, item_to_upload)
+            medias_with_sialinks.append(item_with_sialink)
 
     if args.item_id_to_upload is not None:
-        item_to_upload = Item(id=args.item_id_to_upload)
-        download_then_upload(mediaserver, item_to_upload)
-        exit(0)
+        item_to_upload = mediaserver.get_item(int(args.item_id_to_upload), fields="Path,MediaSources")
+        item_with_sialink = download_then_upload(mediaserver, item_to_upload)
+        medias_with_sialinks.append(item_with_sialink)
 
     if args.date_created is not None:
         medias = mediaserver.get_items(include_item_types=args.media_type_to_upload, sort_by="DateCreated",
@@ -79,10 +83,16 @@ def main():
 
         for item_to_upload in medias:
             if (datetime.strptime(item_to_upload.date_created[:10], '%Y-%m-%d') >= datetime.strptime(args.date_created, '%Y-%m-%d')):
-                download_then_upload(mediaserver, item_to_upload)
+                item_with_sialink = download_then_upload(mediaserver, item_to_upload)
+                medias_with_sialinks.append(item_with_sialink)
             else:
                 break
-        exit(0)
+
+    if args.rss_title is not None:
+        write_rss(medias_with_sialinks, args.rss_id, args.rss_title, args.rss_link,
+                  args.rss_description, args.rss_contributor, args.rss_subtitle)
+
+    exit(0)
 
 
 
