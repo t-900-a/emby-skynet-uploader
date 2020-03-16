@@ -30,7 +30,7 @@ parser.add_argument('--mediaserverconfig', dest='media_server_config', default='
                     help="config file for the emby/jellyfin server connection"
                          " file will be generated if none exists")
 
-parser.add_argument('--rss_id', dest='rss_title', default=hashlib.md5(bytes(datetime.datetime.now().__str__(), "ascii")).hexdigest()[:8], type=str,
+parser.add_argument('--rss_id', dest='rss_id', default=hashlib.md5(bytes(datetime.now().__str__(), "ascii")).hexdigest()[:8], type=str,
                     help="Id for your channel"
                         " i.e. 4c6ca4f7")
 
@@ -60,7 +60,6 @@ args = parser.parse_args()
 def main():
     medias_with_sialinks = []
     config = mediaServer_config(cfg_file=args.media_server_config)
-
     try:
         mediaserver = MediaServer(config)
     except Exception as inst:
@@ -72,15 +71,10 @@ def main():
             item_with_sialink = download_then_upload(mediaserver, item_to_upload)
             medias_with_sialinks.append(item_with_sialink)
 
-        if args.rss_title is not None:
-            write_rss(medias_with_sialinks, args.rss_id, args.rss_title, args.rss_link,
-                      args.rss_description, args.rss_contributor, args.rss_subtitle)
-        exit(0)
-
     if args.item_id_to_upload is not None:
-        item_to_upload = mediaserver.get_item(int(args.item_id_to_upload))
+        item_to_upload = mediaserver.get_item(int(args.item_id_to_upload), fields="Path,MediaSources")
         item_with_sialink = download_then_upload(mediaserver, item_to_upload)
-        exit(0)
+        medias_with_sialinks.append(item_with_sialink)
 
     if args.date_created is not None:
         medias = mediaserver.get_items(include_item_types=args.media_type_to_upload, sort_by="DateCreated",
@@ -92,10 +86,12 @@ def main():
                 medias_with_sialinks.append(item_with_sialink)
             else:
                 break
-        if args.rss_title is not None:
-            write_rss(medias_with_sialinks, args.rss_id, args.rss_title, args.rss_link,
-                      args.rss_description, args.rss_contributor, args.rss_subtitle)
-        exit(0)
+
+    if args.rss_title is not None:
+        write_rss(medias_with_sialinks, args.rss_id, args.rss_title, args.rss_link,
+                  args.rss_description, args.rss_contributor, args.rss_subtitle)
+
+    exit(0)
 
 
 

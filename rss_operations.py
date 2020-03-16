@@ -9,7 +9,7 @@ def write_rss(medias_with_sialinks, id, title, link, description, contributor, s
     fg.load_extension('media', atom=True, rss=True)
     fg.id(id)
     fg.title(title)
-    fg.link(link)
+    fg.link(href=link)
     fg.description(description)
     fg.contributor(name=contributor)
     fg.subtitle(subtitle)
@@ -20,18 +20,18 @@ def write_rss(medias_with_sialinks, id, title, link, description, contributor, s
         fe.summary(media.overview)
         fe.link(href=media.skylink)
         fe.media.content({'url': media.skylink,
-                          'fileSize': media.size,
+                          'fileSize': str(media.size),
                           'type': media.mime_type,
                           'medium': media.media_type,
 #                          'isDefault':'',
                           'expression':'full',
-                          'bitrate': media.totalbitrate,
-                          'framerate':media.framerate,
-                          'samplingrate': media.samplingrate,
-                          'channels': media.channels,
-                          'duration': media.duration_in_sec,
-                          'height': media.height,
-                          'width': media.width,
+                          'bitrate': str(media.totalbitrate),
+                          'framerate': str(media.framerate),
+                          'samplingrate': str(media.samplingrate),
+                          'channels': str(media.channels),
+                          'duration': str(media.duration_in_sec),
+                          'height': str(media.height),
+                          'width': str(media.width),
                           'lang': media.lang})
     atomfeed = fg.atom_str(pretty=True)  # Get the ATOM feed as string
     fg.atom_file('atom.xml')  # Write the ATOM feed to a file
