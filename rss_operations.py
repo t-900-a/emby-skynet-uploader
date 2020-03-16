@@ -25,14 +25,13 @@ def write_rss(medias_with_sialinks, id, title, link, description, contributor, s
                           'medium': media.media_type,
 #                          'isDefault':'',
                           'expression':'full',
-        # TODO rss media elements below bitrate
-                          'bitrate':'10',
-                          'framerate':'30',
-                          'samplingrate':'180',
-                          'channels':'2',
-                          'duration':'1000',
-                          'height':'480',
-                          'width':'480',
-         # TODO jellyfin-python.item doesn't return language of the media
-         # https://emby.media/community/index.php?/topic/83733-retrieving-the-language-for-a-video-item/
-                          'lang':'en'})
+                          'bitrate': media.totalbitrate,
+                          'framerate':media.framerate,
+                          'samplingrate': media.samplingrate,
+                          'channels': media.channels,
+                          'duration': media.duration_in_sec,
+                          'height': media.height,
+                          'width': media.width,
+                          'lang': media.lang})
+    atomfeed = fg.atom_str(pretty=True)  # Get the ATOM feed as string
+    fg.atom_file('atom.xml')  # Write the ATOM feed to a file

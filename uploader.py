@@ -53,6 +53,7 @@ parser.add_argument('--rss_subtitle', dest='rss_subtitle', default='',
 
 args = parser.parse_args()
 # TODO add argument for the script to choose between local or remote file operations
+# TODO Add support for tv shows and anime
 # you'll need to add a function for direct upload within file_operations.py
 # i.e. if your the server admin, you want to use the full path as there is no need to download from your server
 # i.e. if your a user, you want to download the file from the remote server, then upload to skynet
@@ -71,7 +72,7 @@ def main():
             item_with_sialink = download_then_upload(mediaserver, item_to_upload)
             medias_with_sialinks.append(item_with_sialink)
 
-        if args.rss_output is not None:
+        if args.rss_title is not None:
             write_rss(medias_with_sialinks, args.rss_id, args.rss_title, args.rss_link,
                       args.rss_description, args.rss_contributor, args.rss_subtitle)
         exit(0)
@@ -87,11 +88,11 @@ def main():
 
         for item_to_upload in medias:
             if (datetime.strptime(item_to_upload.date_created[:10], '%Y-%m-%d') >= datetime.strptime(args.date_created, '%Y-%m-%d')):
-                item_with_sialink = download_then_upload(mediaserver, item_to_upload, args.rss_output)
+                item_with_sialink = download_then_upload(mediaserver, item_to_upload)
                 medias_with_sialinks.append(item_with_sialink)
             else:
                 break
-        if args.rss_output is not None:
+        if args.rss_title is not None:
             write_rss(medias_with_sialinks, args.rss_id, args.rss_title, args.rss_link,
                       args.rss_description, args.rss_contributor, args.rss_subtitle)
         exit(0)
