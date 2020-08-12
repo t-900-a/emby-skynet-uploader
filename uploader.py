@@ -71,19 +71,19 @@ def main():
         _log.critical(inst)
 
     if args.import_all == True:
-        medias = mediaserver.get_items(include_item_types=args.media_type_to_upload, recursive="true", fields="Path%2C%20MediaStreams")
+        medias = mediaserver.get_items(include_item_types=args.media_type_to_upload, recursive="true", fields="Path%2C%20MediaStreams%2C%20ProviderIds")
         for item_to_upload in medias:
             item_with_sialink = download_then_upload(mediaserver, item_to_upload, args.compression_size)
             medias_with_sialinks.append(item_with_sialink)
 
     if args.item_id_to_upload is not None:
-        item_to_upload = mediaserver.get_item(int(args.item_id_to_upload), fields="Path,MediaSources")
+        item_to_upload = mediaserver.get_item(int(args.item_id_to_upload), fields="Path%2C%20MediaStreams%2C%20ProviderIds")
         item_with_sialink = download_then_upload(mediaserver, item_to_upload, args.compression_size)
         medias_with_sialinks.append(item_with_sialink)
 
     if args.date_created is not None:
         medias = mediaserver.get_items(include_item_types=args.media_type_to_upload, sort_by="DateCreated",
-                                       sort_order="Descending", recursive="true", fields="DateCreated%2C%20Path")
+                                       sort_order="Descending", recursive="true", fields="DateCreated%2C%20Path%2C%20MediaStreams%2C%20ProviderIds")
 
         for item_to_upload in medias:
             if (datetime.strptime(item_to_upload.date_created[:10], '%Y-%m-%d') >= datetime.strptime(args.date_created, '%Y-%m-%d')):
