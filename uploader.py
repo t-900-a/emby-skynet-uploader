@@ -52,6 +52,10 @@ parser.add_argument('--rss_subtitle', dest='rss_subtitle', default='',
                     type=str, help="Addition comment for your site if you want it"
                                    "i.e. For more content, please donate _cryptocurrency_symbol to _cryptocurrency_address")
 
+parser.add_argument('--skynet_file_size_limit', dest='compression_size', default=None, type=int,
+                    help="Skynet portals have file size limits (in megabytes), if the media is larger"
+                                   "than this limit it will be compressed to prevent upload errors")
+
 args = parser.parse_args()
 # TODO add argument for the script to choose between local or remote file operations
 # TODO Add support for tv shows and anime
@@ -67,14 +71,14 @@ def main():
         _log.critical(inst)
 
     if args.import_all == True:
-        medias = mediaserver.get_items(include_item_types=args.media_type_to_upload, recursive="true", fields="Path")
+        medias = mediaserver.get_items(include_item_types=args.media_type_to_upload, recursive="true", fields="Path%2C%20MediaStreams")
         for item_to_upload in medias:
-            item_with_sialink = download_then_upload(mediaserver, item_to_upload)
+            item_with_sialink = download_then_upload(mediaserver, item_to_upload, args.compression_size)
             medias_with_sialinks.append(item_with_sialink)
 
     if args.item_id_to_upload is not None:
         item_to_upload = mediaserver.get_item(int(args.item_id_to_upload), fields="Path,MediaSources")
-        item_with_sialink = download_then_upload(mediaserver, item_to_upload)
+        item_with_sialink = download_then_upload(mediaserver, item_to_upload, args.compression_size)
         medias_with_sialinks.append(item_with_sialink)
 
     if args.date_created is not None:
@@ -83,7 +87,7 @@ def main():
 
         for item_to_upload in medias:
             if (datetime.strptime(item_to_upload.date_created[:10], '%Y-%m-%d') >= datetime.strptime(args.date_created, '%Y-%m-%d')):
-                item_with_sialink = download_then_upload(mediaserver, item_to_upload)
+                item_with_sialink = download_then_upload(mediaserver, item_to_upload, args.compression_size)
                 medias_with_sialinks.append(item_with_sialink)
             else:
                 break

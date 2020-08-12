@@ -1,3 +1,4 @@
 git+https://github.com/t-900-a/jellyfin-python
 siaskynet
 feedgen
+ffmpeg-python
