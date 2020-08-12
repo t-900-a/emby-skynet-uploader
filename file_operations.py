@@ -57,12 +57,28 @@ def download_then_upload(mediaserver, item_to_upload: Item, compression_size) ->
     except Exception as inst:
         _log.critical(inst)
 
+    # upload primary image for item
+    try:
+        image_file = mediaserver.download_item_image(item_to_upload, width=176, height=264)
+        print(image_file)
+    except Exception as inst:
+        _log.critical(inst)
+
+    try:
+        # skylink_image = Skynet.upload_file(image_file)
+        skylink_image = 'sia://vAFrKIUSUBoGPb0wQZ1QK9INQDnx2M4yiPj-oc_dhTFlqQ'
+        print(f"Primary Image is now available on skynet: {skylink_image}")
+    except Exception as inst:
+        _log.critical(inst)
+
     try:
         # clean up the compressed file
         clean_up(file_to_upload)
         if file_to_upload != downloaded_file:
             # clean up the uncompressed file if need be
             clean_up(downloaded_file)
+        # clean up the primary image
+        clean_up(image_file)
     except Exception as inst:
         _log.critical(inst)
 
@@ -71,6 +87,7 @@ def download_then_upload(mediaserver, item_to_upload: Item, compression_size) ->
         setattr(item_to_upload, "size", file_to_upload_size)
         setattr(item_to_upload, "mime_type", content_type)
         setattr(item_to_upload, "bitrate", bitrate)
+        setattr(item_to_upload, "skylink_image", skylink_image)
         return item_to_upload
     except Exception as inst:
         _log.critical(inst)
