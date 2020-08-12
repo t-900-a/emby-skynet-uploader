@@ -15,7 +15,7 @@ def write_rss(medias_with_sialinks, id, title, link, description, contributor, s
     fg.subtitle(subtitle)
     for media in medias_with_sialinks:
         fe = fg.add_entry()
-        fe.id(media.id)
+        fe.id(media.imdb_id)
         fe.title(media.name)
         fe.summary(media.overview)
         fe.link(href=media.skylink)
