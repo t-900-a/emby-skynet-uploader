@@ -56,6 +56,15 @@ parser.add_argument('--skynet_file_size_limit', dest='compression_size', default
                     help="Skynet portals have file size limits (in megabytes), if the media is larger"
                                    "than this limit it will be compressed to prevent upload errors")
 
+parser.add_argument('--namebase_access_key', dest='namebase_access_key', default=None, type=str,
+                    help="Access key, secret key, and domain name are needed if updating the skylink in namebase")
+
+parser.add_argument('--namebase_secret_key', dest='namebase_secret_key', default=None, type=str,
+                    help="Access key, secret key, and domain name are needed if updating the skylink in namebase")
+
+parser.add_argument('--namebase_domain', dest='namebase_domain', default=None, type=str,
+                    help="Access key, secret key, and domain name are needed if updating the skylink in namebase")
+
 args = parser.parse_args()
 # TODO add argument for the script to choose between local or remote file operations
 # TODO Add support for tv shows and anime
@@ -93,8 +102,14 @@ def main():
                 break
 
     if args.rss_title is not None:
-        write_rss(medias_with_sialinks, args.rss_id, args.rss_title, args.rss_link,
-                  args.rss_description, args.rss_contributor, args.rss_subtitle)
+        if args.namebase_access_key and args.namebase_secret_key and args.namebase_domain:
+            rss_sialink = write_rss(medias_with_sialinks, args.rss_id, args.rss_title, args.rss_link,
+                  args.rss_description, args.rss_contributor, args.rss_subtitle, upload_skynet=True)
+
+        else:
+            write_rss(medias_with_sialinks, args.rss_id, args.rss_title, args.rss_link,
+                  args.rss_description, args.rss_contributor, args.rss_subtitle, upload_skynet=False)
+
 
     exit(0)
 

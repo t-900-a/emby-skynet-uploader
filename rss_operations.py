@@ -1,6 +1,8 @@
 from feedgen.feed import FeedGenerator
+from siaskynet import Skynet
 
-def write_rss(medias_with_sialinks, id, title, link, description, contributor, subtitle):
+
+def write_rss(medias_with_sialinks, id, title, link, description, contributor, subtitle, upload_skynet) -> str:
     # TODO add <media:group> so that if a media item exists multiple times they are included in the same group
     # i.e. 480p, 720p, 1080p, 4k
     # TODO include actors as contributors to a media item
@@ -23,7 +25,7 @@ def write_rss(medias_with_sialinks, id, title, link, description, contributor, s
                           'fileSize': str(media.size),
                           'type': media.mime_type,
                           'medium': media.media_type,
-#                          'isDefault':'',
+                          #                          'isDefault':'',
                           'expression': 'full',
                           'bitrate': str(media.totalbitrate),
                           'framerate': str(media.framerate),
@@ -40,3 +42,9 @@ def write_rss(medias_with_sialinks, id, title, link, description, contributor, s
 
     atomfeed = fg.atom_str(pretty=True)  # Get the ATOM feed as string
     fg.atom_file('atom.xml')  # Write the ATOM feed to a file
+    # upload file to skynet
+    if upload_skynet is True:
+        skylink = Skynet.upload_file('atom.xml')
+        return skylink
+    else:
+        return ''
