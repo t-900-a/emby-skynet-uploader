@@ -7,6 +7,7 @@ from datetime import *
 import hashlib
 from file_operations import download_then_upload
 from rss_operations import write_rss
+from hns_operations import update_namebase_dns
 
 _log = logging.getLogger(__name__)
 
@@ -105,7 +106,10 @@ def main():
         if args.namebase_access_key and args.namebase_secret_key and args.namebase_domain:
             rss_sialink = write_rss(medias_with_sialinks, args.rss_id, args.rss_title, args.rss_link,
                   args.rss_description, args.rss_contributor, args.rss_subtitle, upload_skynet=True)
-
+            update_namebase_dns(args.namebase_access_key,
+                                args.namebase_secret_key,
+                                args.namebase_domain,
+                                rss_sialink)
         else:
             write_rss(medias_with_sialinks, args.rss_id, args.rss_title, args.rss_link,
                   args.rss_description, args.rss_contributor, args.rss_subtitle, upload_skynet=False)
