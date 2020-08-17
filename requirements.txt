@@ -1,5 +1,5 @@
 git+https://github.com/t-900-a/jellyfin-python
-git+https://github.com/wy/namebase-exchange-python
+namebase-exchange-python
 siaskynet
 feedgen
 ffmpeg-python

@@ -12,6 +12,8 @@ def write_rss(medias_with_sialinks, id, title, link, description, contributor, s
     fg.id(id)
     fg.title(title)
     fg.link(href=link)
+    imdb_badge =
+    description = description + '\n' +
     fg.description(description)
     fg.contributor(name=contributor)
     fg.subtitle(subtitle)
