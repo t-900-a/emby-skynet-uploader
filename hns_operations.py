@@ -16,7 +16,7 @@ def update_namebase_dns(api_key: str, secret_key: str, domain: str, sialink : st
         # modify the existing TXT record if there is one
         if record['type'] == 'TXT':
             txt_set = True
-            record['host'] = '@'
+            record['host'] = ''
             record['value'] = sialink
         updated_records.append(record)
 
@@ -29,9 +29,16 @@ def update_namebase_dns(api_key: str, secret_key: str, domain: str, sialink : st
                                 'value':'AAApJJPnci_CzFnddB076HGu1_C64T6bfoiQqvsiVB5XeQ','ttl':0})
 
     dns_update_success = exchange.update_dns_settings(domain=domain,
-                                 records=updated_records)['success']
+                                 records=updated_records)
+    try:
+        dns_update_success = dns_update_success['success']
+    except Exception as e:
+        print(dns_update_success)
+        raise e
     if dns_update_success == False:
         print('Namebase DNS record update failed')
+    else:
+        print('Namebase DNS record update successful')
 
     return dns_update_success
 

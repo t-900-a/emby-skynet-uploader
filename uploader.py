@@ -66,8 +66,11 @@ parser.add_argument('--namebase_secret_key', dest='namebase_secret_key', default
 parser.add_argument('--namebase_domain', dest='namebase_domain', default=None, type=str,
                     help="Access key, secret key, and domain name are needed if updating the skylink in namebase")
 
+parser.add_argument('--skynet_instance', dest='skynet_isntance', default=None, type=str,
+                    help="If a skylink instance is passed, the skynet links with resolve to this instance"
+                         "i.e. https://skynethub.io/")
+
 args = parser.parse_args()
-# TODO add argument for the script to choose between local or remote file operations
 # TODO Add support for tv shows and anime
 # you'll need to add a function for direct upload within file_operations.py
 # i.e. if your the server admin, you want to use the full path as there is no need to download from your server
@@ -102,17 +105,19 @@ def main():
             else:
                 break
 
-    if args.rss_title is not None:
-        if args.namebase_access_key and args.namebase_secret_key and args.namebase_domain:
-            rss_sialink = write_rss(medias_with_sialinks, args.rss_id, args.rss_title, args.rss_link,
-                  args.rss_description, args.rss_contributor, args.rss_subtitle, upload_skynet=True)
-            update_namebase_dns(args.namebase_access_key,
-                                args.namebase_secret_key,
-                                args.namebase_domain,
-                                rss_sialink)
-        else:
-            write_rss(medias_with_sialinks, args.rss_id, args.rss_title, args.rss_link,
-                  args.rss_description, args.rss_contributor, args.rss_subtitle, upload_skynet=False)
+    if args.namebase_access_key and args.namebase_secret_key and args.namebase_domain:
+        rss_sialink = write_rss(medias_with_sialinks, args.rss_id, args.rss_title, args.rss_link,
+              args.rss_description, args.rss_contributor, args.rss_subtitle, skynet_instance=args.skynet_instance)
+        dns_update_success = update_namebase_dns(args.namebase_access_key,
+                            args.namebase_secret_key,
+                            args.namebase_domain,
+                            rss_sialink)
+        if dns_update_success:
+            print(f'The rss feed should soon be available at any skynet instance, '
+                    f'example: {args.skynet_instance}/hns/{args.namebase_domain}/')
+    else:
+        write_rss(medias_with_sialinks, args.rss_id, args.rss_title, args.rss_link,
+              args.rss_description, args.rss_contributor, args.rss_subtitle, skynet_instance=args.skynet_instance)
 
 
     exit(0)
