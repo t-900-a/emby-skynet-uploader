@@ -1,12 +1,13 @@
 from feedgen.feed import FeedGenerator
 import siaskynet as skynet
-import requests
 
-def rewrite_skylink(skynet_instance, skylink):
-    if skynet_instance is not None and skylink[6:] == 'sia://':
-        return skylink.replace('sia://', skylink)
+def rewrite_sialink(skynet_instance, sialink):
+    if skynet_instance is not None and sialink[:6] == 'sia://':
+        sialink = sialink[6:]
+        sialink = skynet_instance + sialink
+        return sialink
     else:
-        return skylink
+        return sialink
 
 def write_rss(medias_with_sialinks, id, title, link, description, contributor, subtitle, skynet_instance) -> str:
     # TODO add <media:group> so that if a media item exists multiple times they are included in the same group
@@ -16,7 +17,7 @@ def write_rss(medias_with_sialinks, id, title, link, description, contributor, s
     fg.load_extension('media', atom=True, rss=True)
     fg.id(id)
     fg.title(title)
-    fg.link(href=rewrite_skylink(skynet_instance, link))
+    fg.link(href=rewrite_sialink(skynet_instance, link))
     fg.description(description)
     fg.contributor(name=contributor)
     fg.subtitle(subtitle)
@@ -25,9 +26,9 @@ def write_rss(medias_with_sialinks, id, title, link, description, contributor, s
         fe.id(media.imdb_id)
         fe.title(media.name)
         fe.summary(media.description)
-        fe.link(href=rewrite_skylink(skynet_instance, media.skylink))
+        fe.link(href=rewrite_sialink(skynet_instance, media.skylink))
         # TODO add critic rating to xml tags
-        fe.media.content({'url': rewrite_skylink(skynet_instance, media.skylink),
+        fe.media.content({'url': rewrite_sialink(skynet_instance, media.skylink),
                           'fileSize': str(media.size),
                           'type': media.mime_type,
                           'medium': media.media_type,
@@ -42,7 +43,7 @@ def write_rss(medias_with_sialinks, id, title, link, description, contributor, s
                           'width': str(media.width),
                           'lang': media.lang})
 
-        fe.media.thumbnail({'url': rewrite_skylink(skynet_instance, media.skylink_image),
+        fe.media.thumbnail({'url': rewrite_sialink(skynet_instance, media.skylink_image),
                             'height': '264',
                             'width': '176'})
         # build summary

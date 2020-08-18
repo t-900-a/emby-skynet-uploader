@@ -114,7 +114,7 @@ def main():
                             rss_sialink)
         if dns_update_success:
             print(f'The rss feed should soon be available at any skynet instance, '
-                    f'example: {args.skynet_instance}/hns/{args.namebase_domain}/')
+                    f'example: {args.skynet_instance}hns/{args.namebase_domain}/')
     else:
         write_rss(medias_with_sialinks, args.rss_id, args.rss_title, args.rss_link,
               args.rss_description, args.rss_contributor, args.rss_subtitle, skynet_instance=args.skynet_instance)
