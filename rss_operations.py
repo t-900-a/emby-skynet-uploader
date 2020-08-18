@@ -1,5 +1,5 @@
 from feedgen.feed import FeedGenerator
-from siaskynet import Skynet
+import siaskynet as skynet
 import requests
 
 
@@ -60,7 +60,7 @@ def write_rss(medias_with_sialinks, id, title, link, description, contributor, s
     fg.atom_file('atom.xml')  # Write the ATOM feed to a file
     # upload file to skynet
     if upload_skynet is True:
-        skylink = Skynet.upload_file('atom.xml')
+        skylink = skynet.upload_file('atom.xml')
         return skylink
     else:
         return ''

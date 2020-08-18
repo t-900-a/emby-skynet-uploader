@@ -1,5 +1,5 @@
 from mediaServer.item import Item
-from siaskynet import Skynet
+import siaskynet as skynet
 import os
 import logging
 import ffmpeg
@@ -51,7 +51,7 @@ def download_then_upload(mediaserver, item_to_upload: Item, compression_size) ->
     # TODO upload artwork for media i.e. album cover, movie poster, etc
     print(f"Uploading file to skynet: {file_to_upload}")
     try:
-        skylink = Skynet.upload_file(file_to_upload)
+        skylink = skynet.upload_file(file_to_upload)
         # skylink = 'sia://AAB65241yS2qpoDIcNrjM4cxc9KY3rGQs_uPmN_M3b-WYw'
         # skylink = 'https://siasky.net/AAB65241yS2qpoDIcNrjM4cxc9KY3rGQs_uPmN_M3b-WYw'
         print(f"Media is now available on skynet: {skylink}")
@@ -66,7 +66,7 @@ def download_then_upload(mediaserver, item_to_upload: Item, compression_size) ->
         _log.critical(inst)
 
     try:
-        skylink_image = Skynet.upload_file(image_file)
+        skylink_image = skynet.upload_file(image_file)
         # skylink_image = 'sia://vAFrKIUSUBoGPb0wQZ1QK9INQDnx2M4yiPj-oc_dhTFlqQ'
         # skylink_image = 'https://siasky.net/vAFrKIUSUBoGPb0wQZ1QK9INQDnx2M4yiPj-oc_dhTFlqQ'
         print(f"Primary Image is now available on skynet: {skylink_image}")
