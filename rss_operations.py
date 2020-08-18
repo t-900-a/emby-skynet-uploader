@@ -16,7 +16,7 @@ def write_rss(medias_with_sialinks, id, title, link, description, contributor, s
     fg.load_extension('media', atom=True, rss=True)
     fg.id(id)
     fg.title(title)
-    fg.link(href=rewrite_skylink(link))
+    fg.link(href=rewrite_skylink(skynet_instance, link))
     fg.description(description)
     fg.contributor(name=contributor)
     fg.subtitle(subtitle)
@@ -25,9 +25,9 @@ def write_rss(medias_with_sialinks, id, title, link, description, contributor, s
         fe.id(media.imdb_id)
         fe.title(media.name)
         fe.summary(media.description)
-        fe.link(href=rewrite_skylink(media.skylink))
+        fe.link(href=rewrite_skylink(skynet_instance, media.skylink))
         # TODO add critic rating to xml tags
-        fe.media.content({'url': rewrite_skylink(media.skylink),
+        fe.media.content({'url': rewrite_skylink(skynet_instance, media.skylink),
                           'fileSize': str(media.size),
                           'type': media.mime_type,
                           'medium': media.media_type,
@@ -42,7 +42,7 @@ def write_rss(medias_with_sialinks, id, title, link, description, contributor, s
                           'width': str(media.width),
                           'lang': media.lang})
 
-        fe.media.thumbnail({'url': rewrite_skylink(media.skylink_image),
+        fe.media.thumbnail({'url': rewrite_skylink(skynet_instance, media.skylink_image),
                             'height': '264',
                             'width': '176'})
         # build summary
