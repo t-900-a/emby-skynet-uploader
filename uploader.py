@@ -66,7 +66,7 @@ parser.add_argument('--namebase_secret_key', dest='namebase_secret_key', default
 parser.add_argument('--namebase_domain', dest='namebase_domain', default=None, type=str,
                     help="Access key, secret key, and domain name are needed if updating the skylink in namebase")
 
-parser.add_argument('--skynet_instance', dest='skynet_isntance', default=None, type=str,
+parser.add_argument('--skynet_instance', dest='skynet_instance', default=None, type=str,
                     help="If a skylink instance is passed, the skynet links with resolve to this instance"
                          "i.e. https://skynethub.io/")
 
