@@ -1,15 +1,22 @@
 Script for uploading to skynet
 ===============================
 
-Script to upload media files from a jellyfin or emby server to skynet
+Script to upload media files from a jellyfin or emby server to skynet with support for handshake name service via namebase.
 
-* release 0.1
+An RSS feed can be generated containing sia links to all your media. The RSS feed can also be uploaded to skynet and your namebase domain entry updated so that your custom domain can point to your latest rss feed.
+Example: https://skynet.net/hns/<yourMediaFeedDomainName>
+
+* release 0.2
 * open source: https://github.com/t-900-a/jellyfin-skynet-uploader
 * Jellyfin is the FREE & OPEN SOURCE media player
 * works with Jellyfin 10 and Emby 4.*
 * Python 3.x compatible
 * What is skynet?
 * * It's a decentralized CDN: https://siasky.net/
+
+[Demo run through](skynet_uploader.gif)
+
+Note that all examples are creative commons or open source movies
 
 Copyrights
 ----------
@@ -27,7 +34,7 @@ Merge requests are invited
 
 There are many todo's in the code
 
-TODO: Stream the download to get around the requirement to have download permissions on the emby/jellyfin server
+TODO: Stream the download from the emby server to get around the requirement to have download permissions on the emby/jellyfin server
 TODO: Include additional information into the rss feed i.e. genre, actors, imdb rating, etc
 
 Available Scripts
@@ -71,6 +78,17 @@ Parameters
 * * --rss_subtitle
 * * * Addition comment for your site if you want it
 * * * i.e. For more content, please donate _cryptocurrency_symbol to _cryptocurrency_address
+
+* Skynet (Siacoin) and Namebase (HNS) parameters
+* * --skynet_file_size_limit
+* * * Skynet portals have file size limits (in megabytes), if the media is larger than this limit it will be compressed (using ffmpeg) to prevent upload errors
+* * --namebase_access_key
+* * * Access key, secret key, and domain name are needed if updating the skylink in namebase
+* * --namebase_domain
+* * * Access key, secret key, and domain name are needed if updating the skylink in namebase
+* * --skynet_instance
+* * * If a skylink instance is passed, the skynet links with resolve to this instance i.e. https://skynethub.io/
+
 
 Usage
 -----------
@@ -118,6 +136,12 @@ Examples
 .. code-block:: bash
 
     python uploader.py --all --mediatype "Episode"
+
+* Upload all Movies to your namebase domain
+
+.. code-block:: bash
+
+    python uploader.py --all --mediatype "Movie" --rss_title "My Media" --skynet_file_size_limit 1000 --namebase_access_key xxx --namebase_secret_key xxxx --namebase_domain MoviesRUs --skynet_instance https://siasky.net/
 
 * Example RSS Feed
 
