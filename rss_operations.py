@@ -52,7 +52,7 @@ def write_rss(medias_with_sialinks, id, title, link, description, contributor, s
         f"https://img.shields.io/static/v1?"
         f"label=Rotten%20Tomatoes&message={tomatoe_score}%"
         f"&color=red&logo={rotten_tomatoes_base64_png}"
-    )
+    ).text
     description = description + '\n' + '<![CDATA[' + imdb_badge + rotten_tomatoes_badge + '</html>]]>'
 
 
