@@ -3,11 +3,11 @@ from namebase_exchange.exchange import *
 def update_namebase_dns(api_key: str, secret_key: str, domain: str, sialink : str):
     exchange = Exchange(api_key, secret_key)
     dns_settings = exchange.get_dns_settings(domain)
-    dns_records = dns_settings.pop()['records']
+    dns_records = dns_settings['records']
     ns_set = False
     # verify a nameserver is already specified
     for record in dns_records:
-        if record.type == 'NS' and record.value != '':
+        if record['type'] == 'NS' and record['value'] != '':
             ns_set = True
 
     if ns_set == False:
