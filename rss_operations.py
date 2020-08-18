@@ -61,6 +61,7 @@ def write_rss(medias_with_sialinks, id, title, link, description, contributor, s
     # upload file to skynet
     if upload_skynet is True:
         skylink = skynet.upload_file('atom.xml')
+        print(f'RSS feed is now available on skynet: {skylink}')
         return skylink
     else:
         return ''

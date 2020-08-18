@@ -1,6 +1,6 @@
 from namebase_exchange.exchange import *
 
-def update_namebase_dns(api_key: str, secret_key: str, domain: str, sialink : str):
+def update_namebase_dns(api_key: str, secret_key: str, domain: str, sialink : str) -> bool:
     updated_records = []
     # chop off the sia://
     sialink = sialink[6:]
@@ -28,5 +28,10 @@ def update_namebase_dns(api_key: str, secret_key: str, domain: str, sialink : st
         updated_records.append({'type':'TXT','host':'',
                                 'value':'AAApJJPnci_CzFnddB076HGu1_C64T6bfoiQqvsiVB5XeQ','ttl':0})
 
-    exchange.update_dns_settings(domain=domain,
-                                 records=updated_records)
+    dns_update_success = exchange.update_dns_settings(domain=domain,
+                                 records=updated_records)['success']
+    if dns_update_success == False:
+        print('Namebase DNS record update failed')
+
+    return dns_update_success
+
