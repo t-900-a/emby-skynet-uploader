@@ -4,8 +4,11 @@ Script for uploading to skynet
 Script to upload media files from a jellyfin or emby server to skynet with support for handshake name service via namebase.
 
 An RSS feed can be generated containing sia links to all your media. The RSS feed can also be uploaded to skynet and your namebase domain entry updated so that your custom domain can point to your latest rss feed.
+
 Example: https://siasky.net/hns/<yourMediaFeedDomainName>
+
 Live example that you can add to any rss reader (works best with feeder on f-droid): https://siasky.net/hns/01347
+
 Note that all example movies are in the public domain (creative commons) or open source.
 
 * release 0.2
