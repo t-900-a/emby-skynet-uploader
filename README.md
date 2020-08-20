@@ -183,4 +183,4 @@ Thanks to
 -----------------
 ![CryptoHO.ST](https://cryptoho.st/images/cryptohost_logo_sized.3.png)
 
-Fast and reliable VPS store. Accepting Bitcoin, Lightning Network, Monero, Litecoin and Dash.
+Fast and reliable VPS store. Accepting Monero, Bitcoin, Lightning Network, Litecoin and Dash.
