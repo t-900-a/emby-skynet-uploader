@@ -174,7 +174,9 @@ Examples
 Integration Ideas
 -----------------
 
-Get multiple emby/jellyfin server admins together and have each admin create an rss feed on their own server.
-Then have a centralized server that index and makes the media searchable.
-This project could be used as an inspiration: https://www.datorss.com/
-https://github.com/davidesantangelo/datorss
+Share your emby movies with friends and family without granting them access to emby. Just send them a link to Feeder on F-droid and the link to the rss feed. https://siasky.net/hns/<your hns tld>
+    
+Thanks to
+-----------------
+![CryptoHO.ST](https://cryptoho.st/images/cryptohost_logo_sized.3.png)
+Fast and reliable VPS store. Accepting Bitcoin, Lightning Network, Monero, Litecoin and Dash.
