@@ -14,7 +14,7 @@ Example: https://skynet.net/hns/<yourMediaFeedDomainName>
 * What is skynet?
 * * It's a decentralized CDN: https://siasky.net/
 
-[Demo run through](skynet_uploader.gif)
+![Demo run through](skynet_uploader.gif)
 
 ![Diagram](https://raw.githubusercontent.com/t-900-a/jellyfin-skynet-uploader/master/Diagram.png)
 
