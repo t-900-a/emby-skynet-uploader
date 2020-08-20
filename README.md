@@ -182,4 +182,5 @@ Share your emby movies with friends and family without granting them access to e
 Thanks to
 -----------------
 ![CryptoHO.ST](https://cryptoho.st/images/cryptohost_logo_sized.3.png)
+
 Fast and reliable VPS store. Accepting Bitcoin, Lightning Network, Monero, Litecoin and Dash.
