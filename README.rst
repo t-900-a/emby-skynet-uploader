@@ -18,6 +18,7 @@ Example: https://skynet.net/hns/<yourMediaFeedDomainName>
 
 ![Diagram](https://raw.githubusercontent.com/t-900-a/jellyfin-skynet-uploader/master/Diagram.png)
 
+<img width="964" alt="jarray reverse exampl" src="https://github.com/jaimehernan95/arrayReview-java/blob/master/images/arrayReverse.png">
 Note that all examples are creative commons or open source movies
 
 Copyrights
