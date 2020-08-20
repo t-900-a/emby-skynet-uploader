@@ -16,7 +16,7 @@ Example: https://skynet.net/hns/<yourMediaFeedDomainName>
 
 [Demo run through](skynet_uploader.gif)
 
-![Diagram](Diagram.png)
+![Diagram](https://raw.githubusercontent.com/t-900-a/jellyfin-skynet-uploader/master/Diagram.png)
 
 Note that all examples are creative commons or open source movies
 
