@@ -177,10 +177,13 @@ Examples
 Integration Ideas
 -----------------
 
-Share your emby movies with friends and family without granting them access to emby. Just send them a link to Feeder on F-droid and the link to the rss feed. https://siasky.net/hns/<your hns tld>
+Share your emby movies with friends and family without granting them access to emby. Just send them a link to Feeder on F-droid and the link to the rss feed. `https://siasky.net/hns/<your hns tld>`
     
 Thanks to
 -----------------
 ![CryptoHO.ST](https://cryptoho.st/images/cryptohost_logo_sized.3.png)
 
+
 Fast and reliable VPS store. Accepting Monero, Bitcoin, Lightning Network, Litecoin and Dash.
+
+https://cryptoho.st/
