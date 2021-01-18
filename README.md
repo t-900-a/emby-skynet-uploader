@@ -12,7 +12,7 @@ Live Example: https://siasky.net/hns/01347/
 * release 0.2
 * open source: https://github.com/t-900-a/jellyfin-skynet-uploader
 * Jellyfin is the FREE & OPEN SOURCE media player
-* works with ~~Jellyfin~~- and Emby 4.*
+* works with Emby 4.*
 * Python 3.x compatible
 * What is skynet?
 * * It's a decentralized CDN: https://siasky.net/
@@ -37,7 +37,7 @@ Merge requests are invited
 
 There are many todo's in the code
 
-TODO: Stream the download from the emby server to get around the requirement to have download permissions on the emby/jellyfin server
+TODO: Stream the download from the emby server to get around the requirement to have download permissions on the emby server
 TODO: Include additional information into the rss feed i.e. genre, actors, imdb rating, etc
 
 Available Scripts
@@ -51,7 +51,7 @@ Parameters
 * * iso-8601 date format i.e. 2020-03-08
 * * all media that was created on or after that date will be uploaded to skynet
 * --itemid
-* * the itemid from emby/jellyfin that you would like to upload to skynet
+* * the itemid from emby that you would like to upload to skynet
 * --all
 * * include this argument if you would like to upload all media found on the server to skynet
 * --mediatype
@@ -59,7 +59,7 @@ Parameters
 * * default: Movie,Episode
 * * specify the type of media from the media server you would like to upload"
 * --mediaserverconfig
-* * config file for the emby/jellyfin server connection
+* * config file for the emby server connection
 * * script will prompt you via the command line for your current media server information (IP/PORT/ADMIN user)
 * * file will be generated if none exists
 
@@ -73,7 +73,7 @@ Parameters
 * * * Only required parameter to produce a rss atom feed
 * * --rss_link
 * * * Include a link if you would like your site to be referenced
-* * * i.e. https://www.mysharedmedia.com/jellyfin/
+* * * i.e. https://www.mysharedmedia.com/emby/
 * * --rss_description
 * * * Choose the description of the feed
 * * --rss_contributor
