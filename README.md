@@ -1,7 +1,7 @@
 Script for uploading to skynet
 ===============================
 
-Script to upload media files from a jellyfin or emby server to skynet with support for handshake name service via namebase.
+Script to upload media files from a -jellyfin- or emby server to skynet with support for handshake name service via namebase.
 
 An RSS feed can be generated containing sia links to all your media. The RSS feed can also be uploaded to skynet and your namebase domain entry updated so that your custom domain can point to your latest rss feed.
 
@@ -12,7 +12,7 @@ Live Example: https://siasky.net/hns/01347/
 * release 0.2
 * open source: https://github.com/t-900-a/jellyfin-skynet-uploader
 * Jellyfin is the FREE & OPEN SOURCE media player
-* works with Jellyfin 10 and Emby 4.*
+* works with -Jellyfin- and Emby 4.*
 * Python 3.x compatible
 * What is skynet?
 * * It's a decentralized CDN: https://siasky.net/
